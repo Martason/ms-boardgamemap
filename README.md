@@ -14,13 +14,13 @@ GET / {user} - hämtar vilka boardgames denna user spelat och var i Sverige
   
 ## MonopolyService   
 GET / hämtar alla spelade Monopolpartier.  
-POST  / {user} / {stad}   
-DELETE  /{id}	 => baserat på Boardgame-id  
+POST  / {user} / {stad}  [Authenticate] 
+DELETE  /{id}	 => baserat på Boardgame-id [Authenticate]  
 
 ## SettlersService   
 GET /  => hämtar alla spelade Settlerspartier.   
-POST /{user} / {stad}   
-DELETE /{id} 	=> baserat på Boardgame-id    
+POST /{user} / {stad} [Authenticate]   
+DELETE /{id} 	=> baserat på Boardgame-id  [Authenticate]   
   
 ## EmailService   
 *Roll: Ansvar för att skicka ut önskad rapport till valfri mail. Kommunicerar med BoardgameReportsService för att hämta rapporter.*    
