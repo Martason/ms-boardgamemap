@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\annam\\source\\repos\\Systemintegration\\ms-boardgamemap\\AuthenticationService\\AuthenticationService.csproj": {}
+    "C:\\Users\\hagma\\source\\repos\\Systemintegration\\ms-boardgamemap\\Authenticationservice\\AuthenticationService.csproj": {}
   },
   "projects": {
-    "C:\\Users\\annam\\source\\repos\\Systemintegration\\ms-boardgamemap\\AuthenticationService\\AuthenticationService.csproj": {
+    "C:\\Users\\hagma\\source\\repos\\Systemintegration\\ms-boardgamemap\\Authenticationservice\\AuthenticationService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\annam\\source\\repos\\Systemintegration\\ms-boardgamemap\\AuthenticationService\\AuthenticationService.csproj",
+        "projectUniqueName": "C:\\Users\\hagma\\source\\repos\\Systemintegration\\ms-boardgamemap\\Authenticationservice\\AuthenticationService.csproj",
         "projectName": "AuthenticationService",
-        "projectPath": "C:\\Users\\annam\\source\\repos\\Systemintegration\\ms-boardgamemap\\AuthenticationService\\AuthenticationService.csproj",
-        "packagesPath": "C:\\Users\\annam\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\annam\\source\\repos\\Systemintegration\\ms-boardgamemap\\AuthenticationService\\obj\\",
+        "projectPath": "C:\\Users\\hagma\\source\\repos\\Systemintegration\\ms-boardgamemap\\Authenticationservice\\AuthenticationService.csproj",
+        "packagesPath": "C:\\Users\\hagma\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\hagma\\source\\repos\\Systemintegration\\ms-boardgamemap\\Authenticationservice\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\annam\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\hagma\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
