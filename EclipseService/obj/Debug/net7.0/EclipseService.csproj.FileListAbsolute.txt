@@ -74,3 +74,4 @@ C:\Users\hagma\source\repos\Systemintegration\ms-boardgamemap\EclipseService\obj
 C:\Users\hagma\source\repos\Systemintegration\ms-boardgamemap\EclipseService\obj\Debug\net7.0\EclipseService.pdb
 C:\Users\hagma\source\repos\Systemintegration\ms-boardgamemap\EclipseService\obj\Debug\net7.0\EclipseService.genruntimeconfig.cache
 C:\Users\hagma\source\repos\Systemintegration\ms-boardgamemap\EclipseService\obj\Debug\net7.0\ref\EclipseService.dll
+C:\Users\hagma\source\repos\Systemintegration\ms-boardgamemap\EclipseService\bin\Debug\net7.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

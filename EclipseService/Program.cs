@@ -5,6 +5,7 @@ using Eclipse.Model;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +23,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ClockSkew = TimeSpan.Zero,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     };
-
+    options.SaveToken = true;
 });
 builder.Services.AddAuthorization();
 
@@ -37,9 +38,12 @@ app.MapGet("/", (EclipseDbContext db) =>
 });
 
 
-app.MapPost("/{town}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async (string town, EclipseDbContext db) =>
+app.MapPost("/{town}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async (string town, EclipseDbContext db, HttpContext http) =>
 {
     if (string.IsNullOrWhiteSpace(town)) return Results.BadRequest();
+
+    var _userId = http.User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+    if (_userId is null) return Results.BadRequest("Failed to authorize user");
 
     var game = new EclipseGame
     {
@@ -47,6 +51,7 @@ app.MapPost("/{town}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.Auth
         DateOfGame = DateTime.Now,
         Town = town,
         WinningScore = 10,
+        userId = _userId
     };
 
     db.EclipseGames.Add(game);
@@ -55,11 +60,14 @@ app.MapPost("/{town}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.Auth
 
 });
 
-// Does not work yet. Add Authorization 
-app.MapDelete("/{gameId}", async (string id, EclipseDbContext db) =>
+
+app.MapDelete("/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async (string id, EclipseDbContext db, HttpContext http) =>
 {
-    var guid = new Guid(id);
-    if (await db.EclipseGames.FindAsync(guid) is EclipseGame game)
+    var userId = http.User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+    if (userId is null) return Results.BadRequest("Failed to authorize user");
+
+    var gameGuid = new Guid(id);
+    if (await db.EclipseGames.FirstOrDefaultAsync(g => g.Id == gameGuid && g.userId == userId) is EclipseGame game)
     {
         db.Remove(game);
         await db.SaveChangesAsync();
