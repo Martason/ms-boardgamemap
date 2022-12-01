@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\annam\\source\\repos\\systemintegration\\ms-boardgamemap\\AuthenticationService\\AuthenticationService.csproj": {}
+    "C:\\Users\\annam\\source\\repos\\Systemintegration\\ms-boardgamemap\\AuthenticationService\\AuthenticationService.csproj": {}
   },
   "projects": {
-    "C:\\Users\\annam\\source\\repos\\systemintegration\\ms-boardgamemap\\AuthenticationService\\AuthenticationService.csproj": {
+    "C:\\Users\\annam\\source\\repos\\Systemintegration\\ms-boardgamemap\\AuthenticationService\\AuthenticationService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\annam\\source\\repos\\systemintegration\\ms-boardgamemap\\AuthenticationService\\AuthenticationService.csproj",
+        "projectUniqueName": "C:\\Users\\annam\\source\\repos\\Systemintegration\\ms-boardgamemap\\AuthenticationService\\AuthenticationService.csproj",
         "projectName": "AuthenticationService",
-        "projectPath": "C:\\Users\\annam\\source\\repos\\systemintegration\\ms-boardgamemap\\AuthenticationService\\AuthenticationService.csproj",
+        "projectPath": "C:\\Users\\annam\\source\\repos\\Systemintegration\\ms-boardgamemap\\AuthenticationService\\AuthenticationService.csproj",
         "packagesPath": "C:\\Users\\annam\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\annam\\source\\repos\\systemintegration\\ms-boardgamemap\\AuthenticationService\\obj\\",
+        "outputPath": "C:\\Users\\annam\\source\\repos\\Systemintegration\\ms-boardgamemap\\AuthenticationService\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -45,13 +45,39 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[7.0.0, )"
             },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[7.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.InMemory": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            },
+            "Microsoft.IdentityModel.Tokens": {
+              "target": "Package",
+              "version": "[6.25.0, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.4.0, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[6.25.0, )"
             }
           },
           "imports": [
