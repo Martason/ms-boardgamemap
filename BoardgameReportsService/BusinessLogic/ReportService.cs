@@ -1,12 +1,9 @@
 namespace BoardgameReportsService.BusinessLogic
 {
-    ///<summary>
-    /// Sammanställer data från olika extrena tjänster och bygger brädspelsrapporter
-    ///</summary>
     public interface IReportService
     {
         ///<summary>
-        /// Builds and returns boardgame reports  data från olika extrena tjänster och bygger brädspelsrapporter
+        /// Builds and returns boardgame reports
         ///</summary>
         public Task<TownReportModel> BuildBoardgameReport(string town);
     }
@@ -43,32 +40,20 @@ namespace BoardgameReportsService.BusinessLogic
 
         private async Task<List<EclipseModel>> FetchEclipseData(HttpClient httpClient, string town)
         {
-            var endpoint = "";
-            if (town != null)
-            {
-                endpoint = "";
-            }
-            else
-            {
-                endpoint = "";
-            }
-            var data = await httpClient.GetAsync(endpoint);
-            return testEclipseData;
+            var testendpoint = "https://pokeapi.co/api/v2/pokemon/ditto";
+
+            var testdataNotInUse = await httpClient.GetAsync(testendpoint + "/" + town.ToLower());
+            var testdata = testEclipseData.Where(data => data.Town == town).ToList();
+            return testdata;
 
         }
         private async Task<List<MonopolyModel>> FetchMonopolyData(HttpClient httpClient, string town)
         {
-            var endpoint = "";
-            if (town != null)
-            {
-                endpoint = "";
-            }
-            else
-            {
-                endpoint = "";
-            }
-            var data = await httpClient.GetAsync(endpoint);
-            return testMonopolyData;
+            var testendpoint = "https://pokeapi.co/api/v2/pokemon?limit=100&offset=10";
+
+            var testdataNotInUse = await httpClient.GetAsync(testendpoint + "/" + town.ToLower());
+            var testdata = testMonopolyData.Where(data => data.Town == town).ToList();
+            return testdata;
         }
 
         #region testData         
@@ -77,13 +62,13 @@ namespace BoardgameReportsService.BusinessLogic
             new()
             {
                 DateOfGame = DateTime.Today,
-                Town = "Kalix",
+                Town = "kalix",
                 WinningScore = 42
             },
             new()
             {
                 DateOfGame = new DateTime(2022,11,19),
-                Town = "Kalix",
+                Town = "kalix",
                 WinningScore = 52
             },
             new()
@@ -98,20 +83,20 @@ namespace BoardgameReportsService.BusinessLogic
             new()
             {
                 DateOfGame = DateTime.Today,
-                Town = "Kalix",
-                WinningScore = 42
+                Town = "kalix",
+                WinningScore = 402
             },
             new()
             {
                 DateOfGame = new DateTime(2022,11,19),
-                Town = "Kalix",
-                WinningScore = 52
+                Town = "kalix",
+                WinningScore = 512
             },
             new()
             {
                 DateOfGame = new DateTime(2022,11,09),
-                Town = "Lerum",
-                WinningScore = 36
+                Town = "lerum",
+                WinningScore = 306
             }
         };
         #endregion
