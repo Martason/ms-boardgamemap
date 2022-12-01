@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace BoardgameReportsService.BusinessLogic
 {
     public interface IReportService
@@ -11,19 +13,15 @@ namespace BoardgameReportsService.BusinessLogic
     public class ReportService : IReportService
     {
 
-        private readonly IHttpClientFactory _http;
+        private readonly HttpClient _httpClient;
 
-        public ReportService(IHttpClientFactory http)
-        {
-            _http = http;
-        }
+        public ReportService(HttpClient httpClient) =>
+        _httpClient = httpClient;
 
         public async Task<TownReportModel> BuildBoardgameReport(string town)
         {
-            var httpClient = _http.CreateClient();
-
-            var eclipseData = await FetchEclipseData(httpClient, town);
-            var monopolyData = await FetchMonopolyData(httpClient, town);
+            var eclipseData = await FetchEclipseData(town);
+            var monopolyData = await FetchMonopolyData(town);
 
             var newReport = new TownReportModel()
             {
@@ -38,21 +36,23 @@ namespace BoardgameReportsService.BusinessLogic
             return newReport;
         }
 
-        private async Task<List<EclipseModel>> FetchEclipseData(HttpClient httpClient, string town)
+        private async Task<List<EclipseModel>> FetchEclipseData(string town)
         {
-            var testendpoint = "https://pokeapi.co/api/v2/pokemon/ditto";
+            // TODO not working
+            _httpClient.BaseAddress = new Uri("https://pokeapi.co/api/v2/pokemon");
+            var testdataNotInUse = await _httpClient.GetFromJsonAsync<EclipseModel>("");
 
-            var testdataNotInUse = await httpClient.GetAsync(testendpoint + "/" + town.ToLower());
-            var testdata = testEclipseData.Where(data => data.Town == town).ToList();
+            var testdata = testEclipseData.Where(data => data.Town == town.ToLower()).ToList();
             return testdata;
 
         }
-        private async Task<List<MonopolyModel>> FetchMonopolyData(HttpClient httpClient, string town)
+        private async Task<List<MonopolyModel>> FetchMonopolyData(string town)
         {
-            var testendpoint = "https://pokeapi.co/api/v2/pokemon?limit=100&offset=10";
+            // TODO not working
+            _httpClient.BaseAddress = new Uri("https://pokeapi.co/api/v2/pokemon");
+            var testdataNotInUse = await _httpClient.GetFromJsonAsync<EclipseModel>("");
 
-            var testdataNotInUse = await httpClient.GetAsync(testendpoint + "/" + town.ToLower());
-            var testdata = testMonopolyData.Where(data => data.Town == town).ToList();
+            var testdata = testMonopolyData.Where(data => data.Town == town.ToLower()).ToList();
             return testdata;
         }
 
