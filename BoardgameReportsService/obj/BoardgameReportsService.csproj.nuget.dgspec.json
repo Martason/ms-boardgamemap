@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\annam\\source\\repos\\systemintegration\\ms-boardgamemap\\BoardgameReportsService\\BoardgameReportsService.csproj": {}
+    "C:\\Users\\annam\\source\\repos\\Systemintegration\\ms-boardgamemap\\BoardgameReportsService\\BoardgameReportsService.csproj": {}
   },
   "projects": {
-    "C:\\Users\\annam\\source\\repos\\systemintegration\\ms-boardgamemap\\BoardgameReportsService\\BoardgameReportsService.csproj": {
+    "C:\\Users\\annam\\source\\repos\\Systemintegration\\ms-boardgamemap\\BoardgameReportsService\\BoardgameReportsService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\annam\\source\\repos\\systemintegration\\ms-boardgamemap\\BoardgameReportsService\\BoardgameReportsService.csproj",
+        "projectUniqueName": "C:\\Users\\annam\\source\\repos\\Systemintegration\\ms-boardgamemap\\BoardgameReportsService\\BoardgameReportsService.csproj",
         "projectName": "BoardgameReportsService",
-        "projectPath": "C:\\Users\\annam\\source\\repos\\systemintegration\\ms-boardgamemap\\BoardgameReportsService\\BoardgameReportsService.csproj",
+        "projectPath": "C:\\Users\\annam\\source\\repos\\Systemintegration\\ms-boardgamemap\\BoardgameReportsService\\BoardgameReportsService.csproj",
         "packagesPath": "C:\\Users\\annam\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\annam\\source\\repos\\systemintegration\\ms-boardgamemap\\BoardgameReportsService\\obj\\",
+        "outputPath": "C:\\Users\\annam\\source\\repos\\Systemintegration\\ms-boardgamemap\\BoardgameReportsService\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -46,6 +46,26 @@
           "targetAlias": "net7.0",
           "dependencies": {
             "Microsoft.AspNetCore.OpenApi": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[7.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
               "target": "Package",
               "version": "[7.0.0, )"
             },
