@@ -1,44 +1,58 @@
-var builder = WebApplication.CreateBuilder(args);
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<UserDbContext>(options => options.UseInMemoryDatabase(builder.Configuration.GetConnectionString("Database")));
+
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
 app.UseHttpsRedirection();
 
-var summaries = new[]
+app.MapPost("/register", async (UserModel user, UserDbContext dbContext) =>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    dbContext.Users.Add(user);
+    await dbContext.SaveChangesAsync();
 
-app.MapGet("/weatherforecast", () =>
+    return Results.Ok();
+});
+
+app.MapPost("/login", async (LoginCredentials loginCredentials, UserDbContext dbContext) =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
+    var user = await dbContext.Users.FirstOrDefaultAsync(user => user.Email.Equals(loginCredentials.Email) && user.Password.Equals(loginCredentials.Password));
+    if (user == null) return Results.BadRequest("Bad credentials");
+
+    var secretKey = builder.Configuration["Jwt:Key"];
+
+    var claims = new[]
+    {
+        new Claim(ClaimTypes.NameIdentifier, user.Username),
+        new Claim(ClaimTypes.Email, user.Email),
+    };
+
+    var token = new JwtSecurityToken
+    (
+        issuer: builder.Configuration["Jwt:Issuer"],
+        audience: builder.Configuration["Jwt:Audience"],
+        claims: claims,
+        expires: DateTime.UtcNow.AddMinutes(5),
+        notBefore: DateTime.UtcNow,
+        signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+        SecurityAlgorithms.HmacSha256)
+    );
+
+    var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+    return Results.Ok(tokenString);
+});
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+public record LoginCredentials(string Password, string Email) { };
+
+
+
