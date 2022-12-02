@@ -34,11 +34,11 @@ namespace EclipseService.Migrations
                     b.Property<string>("Town")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("WinningScore")
                         .HasColumnType("int");
-
-                    b.Property<string>("userId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

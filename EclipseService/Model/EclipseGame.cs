@@ -9,7 +9,7 @@ namespace Eclipse.Model
         public string? Town { get; set; }
         public int? WinningScore { get; set; }
 
-        public string? userId { get; set; }
+        public string? UserName { get; set; }
 
     }
 }

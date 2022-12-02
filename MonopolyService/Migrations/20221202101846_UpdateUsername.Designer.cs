@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Monopoly.Model;
 
@@ -11,9 +12,11 @@ using Monopoly.Model;
 namespace MonopolyService.Migrations
 {
     [DbContext(typeof(MonopolyDbContext))]
-    partial class MonopolyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221202101846_UpdateUsername")]
+    partial class UpdateUsername
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

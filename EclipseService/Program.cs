@@ -51,7 +51,7 @@ app.MapPost("/{town}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.Auth
         DateOfGame = DateTime.Now,
         Town = town,
         WinningScore = 10,
-        userId = _userId
+        UserName = _userId
     };
 
     db.EclipseGames.Add(game);
@@ -63,11 +63,11 @@ app.MapPost("/{town}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.Auth
 
 app.MapDelete("/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async (string id, EclipseDbContext db, HttpContext http) =>
 {
-    var userId = http.User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
-    if (userId is null) return Results.BadRequest("Failed to authorize user");
+    var UserName = http.User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+    if (UserName is null) return Results.BadRequest("Failed to authorize user");
 
     var gameGuid = new Guid(id);
-    if (await db.EclipseGames.FirstOrDefaultAsync(g => g.Id == gameGuid && g.userId == userId) is EclipseGame game)
+    if (await db.EclipseGames.FirstOrDefaultAsync(g => g.Id == gameGuid && g.UserName == UserName) is EclipseGame game)
     {
         db.Remove(game);
         await db.SaveChangesAsync();

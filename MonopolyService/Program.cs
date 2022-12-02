@@ -51,7 +51,7 @@ app.MapPost("/{town}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.Auth
         DateOfGame = DateTime.Now,
         Town = town,
         WinningScore = 10,
-        UserId = _userId
+        UserName = _userId
     };
 
     db.MonopolyGames.Add(game);
@@ -63,11 +63,11 @@ app.MapPost("/{town}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.Auth
 
 app.MapDelete("/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async (string id, MonopolyDbContext db, HttpContext http) =>
 {
-    var userId = http.User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
-    if (userId is null) return Results.BadRequest("Failed to authorize user");
+    var userName = http.User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+    if (userName is null) return Results.BadRequest("Failed to authorize user");
 
     var gameGuid = new Guid(id);
-    if (await db.MonopolyGames.FirstOrDefaultAsync(g => g.Id == gameGuid && g.UserId == userId) is MonopolyGame game)
+    if (await db.MonopolyGames.FirstOrDefaultAsync(g => g.Id == gameGuid && g.UserName == userName) is MonopolyGame game)
     {
         db.Remove(game);
         await db.SaveChangesAsync();
