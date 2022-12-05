@@ -28,6 +28,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+// Löser migrationer till databasen om förändring skett. Om databasen inte finns, skapas den. 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<EclipseDbContext>();
+    db.Database.Migrate();
+}
 app.UseAuthentication();
 app.UseAuthorization();
 
