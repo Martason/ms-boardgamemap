@@ -6,10 +6,17 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddDbContext<UserDbContext>(options => options.UseInMemoryDatabase(builder.Configuration.GetConnectionString("Database")));
+builder.Services.AddDbContext<UserDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("AuthenticationConnection")));
 
 
 var app = builder.Build();
+
+// Löser migrationer till databasen om förändring skett. Om databasen inte finns, skapas den. 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<UserDbContext>();
+    db.Database.Migrate();
+}
 
 app.UseHttpsRedirection();
 

@@ -1,0 +1,68 @@
+version: "3.9" # vilken version av docker compose
+services:
+  eclipsedb:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    restart: always
+    ports:
+      - 1434:1433
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_SA_PASSWORD: Passw0rd!
+      # MSSQL_TCP_PORT:
+    volumes:
+      - ./volumes/EclipseDb:/var/opt/mssql/data
+
+  monopolydb:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    restart: always
+    ports:
+      - 1435:1433
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_SA_PASSWORD: Passw0rd!
+      # MSSQL_TCP_PORT:
+    volumes:
+      - ./volumes/MonopolyDb:/var/opt/mssql/data
+
+  authdb:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    restart: always
+    ports:
+      - 1436:1433
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_SA_PASSWORD: Passw0rd!
+      # MSSQL_TCP_PORT:
+    volumes:
+      - ./volumes/AuthenticationDb:/var/opt/mssql/data
+
+    
+  eclipseservice:
+    image: eclipseservice
+    restart: always
+    ports:
+      - 3001:80
+    depends_on:
+      - eclipsedb
+
+  monopolyservice:
+    image: monopolyservice
+    restart: always
+    ports:
+      - 3002:80
+    depends_on: 
+      - monopolydb
+
+  authservice:
+    image: authservice
+    restart: always
+    ports:
+      - 3003:80
+    depends_on:
+      - authdb
+  
+  boardgamereportsservice:
+    image: boardgamereportsservice
+    restart: always
+    ports:
+      - 3004:80
