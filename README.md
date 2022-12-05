@@ -20,9 +20,4 @@ DELETE  /{id}	 => baserat på Boardgame-id [Authenticate]
 ## SettlersService   
 GET /  => hämtar alla spelade Settlerspartier.   
 POST /{user} / {stad} [Authenticate]   
-DELETE /{id} 	=> baserat på Boardgame-id  [Authenticate]   
-  
-## EmailService   
-*Roll: Ansvar för att skicka ut önskad rapport till valfri mail. Kommunicerar med BoardgameReportsService för att hämta rapporter.*    
-GET / {email}/{rapportmodel}  
-POST / {email}/{rapportmodel}  
+DELETE /{id} 	=> baserat på Boardgame-id  [Authenticate]    
