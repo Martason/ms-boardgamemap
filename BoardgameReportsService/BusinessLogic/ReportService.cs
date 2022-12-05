@@ -25,7 +25,7 @@ namespace BoardgameReportsService.BusinessLogic
              */
             var newReport = new TownReportModel()
             {
-                /*               Town = town,
+                /*             Town = town,
                                GamesEcplisePlayed = eclipseData.Count,
                                HighscoreEclipse = eclipseData.Max(data => data.WinningScore),
                                 GamesMonopolyPlayed = monopolyData.Count,
@@ -37,70 +37,27 @@ namespace BoardgameReportsService.BusinessLogic
             return newReport;
         }
 
-        private async Task<EclipseModel> FetchEclipseData(string town)
+        private async Task<List<EclipseModel>> FetchEclipseData(string town)
         {
 
             _httpClient.BaseAddress = new Uri("http://localhost:3000");
             var request = await _httpClient.GetFromJsonAsync<EclipseModel>("/");/* ($"/{town}"); */
 
-            // var eclipseData = request.Where(data => data.Town == town.ToLower()).ToList();
-            return request;
+
+            return null;
 
         }
-        /*   private async Task<List<MonopolyModel>> FetchMonopolyData(string town)
-          {
-              // TODO not working
-              _httpClient.BaseAddress = new Uri("https://pokeapi.co/api/v2/pokemon");
-              var testdataNotInUse = await _httpClient.GetFromJsonAsync<EclipseModel>("");
-
-              var testdata = testMonopolyData.Where(data => data.Town == town.ToLower()).ToList();
-              return testdata;
-          } */
-
-        #region testData         
-        List<EclipseModel> testEclipseData = new List<EclipseModel>
+        private async Task<List<MonopolyModel>> FetchMonopolyData(string town)
         {
-            new()
-            {
-                DateOfGame = DateTime.Today,
-                Town = "kalix",
-                WinningScore = 42
-            },
-            new()
-            {
-                DateOfGame = new DateTime(2022,11,19),
-                Town = "kalix",
-                WinningScore = 52
-            },
-            new()
-            {
-                DateOfGame = new DateTime(2022,11,09),
-                Town = "Lerum",
-                WinningScore = 36
-            }
-        };
-        List<MonopolyModel> testMonopolyData = new List<MonopolyModel>
-        {
-            new()
-            {
-                DateOfGame = DateTime.Today,
-                Town = "kalix",
-                WinningScore = 402
-            },
-            new()
-            {
-                DateOfGame = new DateTime(2022,11,19),
-                Town = "kalix",
-                WinningScore = 512
-            },
-            new()
-            {
-                DateOfGame = new DateTime(2022,11,09),
-                Town = "lerum",
-                WinningScore = 306
-            }
-        };
-        #endregion
+            // TODO not working
+            _httpClient.BaseAddress = new Uri("");
+            var testdataNotInUse = await _httpClient.GetFromJsonAsync<EclipseModel>("");
+
+
+            return null;
+        }
+
+
 
     }
 }
