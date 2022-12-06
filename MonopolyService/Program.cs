@@ -9,7 +9,7 @@ using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<MonopolyDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("MonopolyConnection")));
+builder.Services.AddDbContext<MonopolyDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTION")));
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters()
@@ -39,13 +39,13 @@ using (var scope = app.Services.CreateScope())
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGet("/", (MonopolyDbContext db) =>
+app.MapGet("/monopoly", (MonopolyDbContext db) =>
 {
     var allMonopolyGames = db.MonopolyGames;
     return (allMonopolyGames is null) ? Results.NoContent() : Results.Ok(allMonopolyGames);
 });
 
-app.MapPost("/{town}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async (string town, MonopolyDbContext db, HttpContext http) =>
+app.MapPost("/monopoly/{town}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async (string town, MonopolyDbContext db, HttpContext http) =>
 {
     if (string.IsNullOrWhiteSpace(town)) return Results.BadRequest();
 
@@ -68,7 +68,7 @@ app.MapPost("/{town}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.Auth
 });
 
 
-app.MapDelete("/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async (string id, MonopolyDbContext db, HttpContext http) =>
+app.MapDelete("/monopoly/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async (string id, MonopolyDbContext db, HttpContext http) =>
 {
     var userName = http.User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
     if (userName is null) return Results.BadRequest("Failed to authorize user");

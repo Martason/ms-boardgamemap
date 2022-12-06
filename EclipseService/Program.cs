@@ -9,7 +9,7 @@ using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<EclipseDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("EclipseConnection")));
+builder.Services.AddDbContext<EclipseDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTION")));
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters()
@@ -38,14 +38,14 @@ using (var scope = app.Services.CreateScope())
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGet("/", (EclipseDbContext db) =>
+app.MapGet("/eclipse", (EclipseDbContext db) =>
 {
     var allEclipseGames = db.EclipseGames;
     return (allEclipseGames is null) ? Results.NoContent() : Results.Ok(allEclipseGames);
 });
 
 
-app.MapPost("/{town}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async (string town, EclipseDbContext db, HttpContext http) =>
+app.MapPost("/eclipse/{town}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async (string town, EclipseDbContext db, HttpContext http) =>
 {
     if (string.IsNullOrWhiteSpace(town)) return Results.BadRequest();
 
@@ -68,7 +68,7 @@ app.MapPost("/{town}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.Auth
 });
 
 
-app.MapDelete("/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async (string id, EclipseDbContext db, HttpContext http) =>
+app.MapDelete("/eclipse/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async (string id, EclipseDbContext db, HttpContext http) =>
 {
     var UserName = http.User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
     if (UserName is null) return Results.BadRequest("Failed to authorize user");

@@ -18,10 +18,10 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
-app.MapGet("/{town}", async (string town, IReportService reportService) =>
+app.MapGet("/allGames/{town}", async (string town, IReportService reportService) =>
 {
-    var report = await reportService.BuildBoardgameReport(town);
-    return Results.Ok(report);
+    // var report = await reportService.BuildBoardgameReport(town);
+    return Results.Ok();
 });
 
 
