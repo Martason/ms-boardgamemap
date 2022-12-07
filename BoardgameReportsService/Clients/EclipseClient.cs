@@ -17,9 +17,10 @@ namespace BoardgameReportsService
             return eclipseGames;
         }
 
-        public async Task<EclipseGame> PostEclipseGame(string town)
+        public async Task<HttpResponseMessage> PostEclipseGame(string town)
         {
-            var eclipseGame = await _httpClient.GetFromJsonAsync<EclipseGame>($"/eclipse/{town}");
+
+            var eclipseGame = await _httpClient.PostAsJsonAsync<string>($"/eclipse/{town}", $"{town}");
             return eclipseGame;
         }
     }
