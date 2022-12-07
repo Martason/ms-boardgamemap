@@ -34,6 +34,14 @@ app.MapGet("/allGames", async (EclipseClient eclipseClient) =>
 });
 
 
+app.MapPost("/eclipse/{town}", async (string town, EclipseClient eclipseClient) =>
+{
+    var eclipsegame = await eclipseClient.PostEclipseGame(town);
+    return Results.Ok(eclipsegame);
+
+});
+
+
 
 /*
 1. fixa alla endoints här i report service
