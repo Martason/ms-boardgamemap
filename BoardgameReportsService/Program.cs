@@ -5,23 +5,32 @@ Sammanställa svaren till någon typ av rapport
 sedan kunna skicka den raporten som en serialiserad svar till en client
 */
 
-using BoardgameReportsService.BusinessLogic;
+
+
+
+using BoardgameReportsService;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHttpClient();
-builder.Services.AddTransient<IReportService, ReportService>();
-builder.Services.AddEndpointsApiExplorer();
+// builder.Services.AddTransient<IReportService, ReportService>();
 
+builder.Services.AddHttpClient<EclipseClient>(client =>
+{
+    client.BaseAddress = new Uri("http://eclipseservice");
+});
 
 var app = builder.Build();
 
 app.UseHttpsRedirection();
 
-app.MapGet("/allGames/{town}", async (string town, IReportService reportService) =>
+app.MapGet("/allGames", async (EclipseClient eclipseClient) =>
 {
-    // var report = await reportService.BuildBoardgameReport(town);
-    return Results.Ok();
+    var eclipseGames = await eclipseClient.GetEclipseGames();
+    if (eclipseGames == null)
+    {
+        return Results.NotFound("There are no EclipseGames");
+    }
+    return Results.Ok(eclipseGames);
 });
 
 

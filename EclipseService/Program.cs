@@ -44,6 +44,13 @@ app.MapGet("/eclipse", (EclipseDbContext db) =>
     return (allEclipseGames is null) ? Results.NoContent() : Results.Ok(allEclipseGames);
 });
 
+app.MapGet("/eclipse/{id}", async (string id, EclipseDbContext db) =>
+{
+    var gameGuid = new Guid(id);
+    var game = await db.EclipseGames.FirstOrDefaultAsync(g => g.Id == gameGuid);
+
+    return game;
+});
 
 app.MapPost("/eclipse/{town}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async (string town, EclipseDbContext db, HttpContext http) =>
 {
