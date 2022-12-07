@@ -25,6 +25,21 @@ app.MapGet("/allGames/{town}", async (string town, IReportService reportService)
 });
 
 
+
+/*
+1. fixa alla endoints här i report service
+    app.MapGet("Login")
+    app.MapGet("Register")
+    app.MapGet("/Monolpoly")
+    app.MapGet("/Eclipse")
+2. få till att kunna hämta data från monopoly och skapa en rapport
+3. client class
+
+*/
+
+
+
+
 app.Run();
 
 
