@@ -38,7 +38,7 @@ services:
 
     
   eclipseservice:
-    image: eclipseservice
+    image: deshie/eclipseservice
     restart: always
     ports:
       - 3001:80
@@ -46,7 +46,7 @@ services:
       - eclipsedb
 
   monopolyservice:
-    image: monopolyservice
+    image: deshie/monopolyservice
     restart: always
     ports:
       - 3002:80
@@ -54,7 +54,7 @@ services:
       - monopolydb
 
   authservice:
-    image: authservice
+    image: deshie/authenticationservice
     restart: always
     ports:
       - 3003:80
@@ -62,7 +62,7 @@ services:
       - authdb
   
   boardgamereportsservice:
-    image: boardgamereportsservice
+    image: deshie/reportservice
     restart: always
     ports:
       - 3004:80

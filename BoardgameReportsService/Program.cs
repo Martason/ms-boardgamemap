@@ -6,6 +6,8 @@ sedan kunna skicka den raporten som en serialiserad svar till en client
 */
 
 using BoardgameReportsService.BusinessLogic;
+using Grpc.Net.Client;
+using BoardgameReportsService.Protos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,12 @@ app.UseHttpsRedirection();
 
 app.MapGet("/{town}", async (string town, IReportService reportService) =>
 {
+    using var channel = GrpcChannel.ForAddress("http://eclipseservice");
+    var eclipseClient = new Eclipse.
+
+
+
+
     var report = await reportService.BuildBoardgameReport(town);
     return Results.Ok(report);
 });

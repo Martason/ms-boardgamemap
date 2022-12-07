@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using EclipseService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,11 +26,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     };
     options.SaveToken = true;
 });
+builder.Services.AddGrpc();
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// Löser migrationer till databasen om förändring skett. Om databasen inte finns, skapas den. 
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<EclipseDbContext>();
@@ -37,6 +38,8 @@ using (var scope = app.Services.CreateScope())
 }
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapGrpcService<GameService>();
 
 app.MapGet("/", (EclipseDbContext db) =>
 {

@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option csharp_namespace ="EclipseService.Protos";
+import "google/protobuf/timestamp.proto";
+
+message GameRequestModel {
+}
+message GameResponseModel {
+    repeated GameModel Games = 1;
+}
+message GameModel {
+    string Id = 1;
+    string GameName = 2;
+    google.protobuf.Timestamp DateOfGame = 3;
+    string Town = 4;
+    int32 WinningScore = 5;
+    string Username = 6;
+}
+
+service Games {
+    rpc GetGames(GameRequestModel) returns (GameResponseModel);
+}

@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option csharp_namespace ="BoardgameReportsService.Protos";
+import "google/protobuf/timestamp.proto";
+
+message EclipseRequestModel {
+}
+message EclipseResponseModel {
+    repeated EclipseModel Games = 1;
+}
+message EclipseModel {
+    string Id = 1;
+    string GameName = 2;
+    google.protobuf.Timestamp DateOfGame = 3;
+    string Town = 4;
+    int32 WinningScore = 5;
+    string Username = 6;
+}
+
+service Eclipse {
+    rpc GetEclipseGames(EclipseRequestModel) returns (EclipseResponseModel);
+}
