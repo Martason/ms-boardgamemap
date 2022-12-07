@@ -1,12 +1,11 @@
 version: "3.9" 
 services:  
-  eclipseservice:
-    build: ./EclipseService
-    image: piahagman/eclipseservice
+  boardgamereportsservice:
+    build: ./BoardgameReportsService
+    image: piahagman/boardgamereportsservice
     restart: always
     ports:
-      - 3001:80
-
+      - 3004:80
 
   monopolyservice:
     build: ./MonopolyService
@@ -15,6 +14,12 @@ services:
     ports:
       - 3002:80
 
+  eclipseservice:
+    build: ./EclipseService
+    image: piahagman/eclipseservice
+    restart: always
+    ports:
+      - 3001:80
 
   authservice:
     build: ./AuthenticationService
@@ -24,9 +29,4 @@ services:
       - 3003:80
 
   
-  boardgamereportsservice:
-    build: ./BoardgameReportsService
-    image: piahagman/boardgamereportsservice
-    restart: always
-    ports:
-      - 3004:80
+  
