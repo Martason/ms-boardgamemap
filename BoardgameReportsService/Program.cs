@@ -72,11 +72,11 @@ app.MapPost("/login", async (LoginCredentials loginCredentials, AuthenticationCl
 app.MapGet("/allGames", async (EclipseClient eclipseClient, MonopolyClient monopolyClient) =>
 {
     var eclipseGames = await eclipseClient.GetEclipseGames();
-    //monopolyGames = await monopolyClient.GetMonopolyGames();
+    var monopolyGames = await monopolyClient.GetMonopolyGames();
 
     var allGames = new List<Game>();
     allGames.AddRange(eclipseGames);
-    //allGames.AddRange(monopolyGames);
+    allGames.AddRange(monopolyGames);
     if (allGames == null)
     {
         return Results.NotFound("There are no games");
