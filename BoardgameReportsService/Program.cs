@@ -6,10 +6,12 @@ sedan kunna skicka den raporten som en serialiserad svar till en client
 */
 
 using BoardgameReportsService;
+using BoardgameReportsService.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -64,11 +66,24 @@ app.MapGet("/allGames", async (EclipseClient eclipseClient, MonopolyClient monop
 });
 
 
-app.MapPost("/eclipse/{town}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async (string town, EclipseClient eclipseClient) =>
+app.MapPost("/eclipse/{town}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async (string town, EclipseClient eclipseClient, HttpContext http) =>
 {
-    var eclipsegame = await eclipseClient.PostEclipseGame(town);
-    return Results.Ok(eclipsegame);
-    // Funkar ej? Internal server error
+    if (string.IsNullOrWhiteSpace(town)) return Results.BadRequest();
+
+    var userName = http.User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+    if (userName is null) return Results.BadRequest("Failed to authorize user");
+
+    var input = new EclipseGameInput
+    {
+        UserName = userName,
+        Town = town
+    };
+
+    var postSucceeded = await eclipseClient.PostEclipseGame(input);
+    if (postSucceeded) return Results.Ok(input);
+    return Results.BadRequest();
+
+
 });
 
 
@@ -85,5 +100,6 @@ app.MapPost("/eclipse/{town}", [Authorize(AuthenticationSchemes = JwtBearerDefau
 */
 
 app.Run();
+
 
 

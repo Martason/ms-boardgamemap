@@ -32,20 +32,15 @@ app.MapGet("/eclipse/{id}", async (string id, EclipseDbContext db) =>
     return game;
 });
 
-app.MapPost("/eclipse/{town}", async (string town, EclipseDbContext db, HttpContext http) =>
+app.MapPost("/eclipse", async (EclipseGameInput input, EclipseDbContext db) =>
 {
-    if (string.IsNullOrWhiteSpace(town)) return Results.BadRequest();
-
-    var _userId = http.User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
-    if (_userId is null) return Results.BadRequest("Failed to authorize user");
-
     var game = new EclipseGame
     {
         GameName = "Eclipse",
         DateOfGame = DateTime.Now,
-        Town = town,
+        Town = input.town,
         WinningScore = 10,
-        UserName = _userId
+        UserName = input.username
     };
 
     db.EclipseGames.Add(game);
@@ -73,3 +68,8 @@ app.MapDelete("/eclipse/{id}", async (string id, EclipseDbContext db, HttpContex
 
 app.Run();
 
+public class EclipseGameInput
+{
+    public string? town { get; set; }
+    public string? username { get; set; }
+};
