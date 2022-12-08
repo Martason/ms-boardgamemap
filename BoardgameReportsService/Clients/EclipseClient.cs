@@ -10,16 +10,29 @@ namespace BoardgameReportsService
             _httpClient = httpClient;
         }
 
-        public async Task<List<EclipseGame>> GetEclipseGames()
+        public async Task<List<Game>> GetEclipseGames()
         {
             var eclipseGames = await _httpClient.GetFromJsonAsync<List<EclipseGame>>("/eclipse");
             if (eclipseGames is null) return null;
-            return eclipseGames;
+
+            var games = new List<Game>();
+            foreach (var game in eclipseGames)
+            {
+                games.Add(new Game
+                {
+                    Name = game.GameName,
+                    DateOfGame = game.DateOfGame,
+                    Town = game.Town,
+                    WinningScore = game.WinningScore,
+                    UserName = game.UserName
+                });
+            }
+            return games;
         }
 
-        public async Task<bool> PostEclipseGame(EclipseGameInput input)
+        public async Task<bool> PostEclipseGame(GameInput input)
         {
-            var eclipseGame = await _httpClient.PostAsJsonAsync<EclipseGameInput>($"/eclipse", input);
+            var eclipseGame = await _httpClient.PostAsJsonAsync<GameInput>($"/eclipse", input);
             return eclipseGame.IsSuccessStatusCode;
         }
 

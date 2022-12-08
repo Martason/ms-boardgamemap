@@ -32,7 +32,7 @@ app.MapGet("/eclipse/{id}", async (string id, EclipseDbContext db) =>
     return game;
 });
 
-app.MapPost("/eclipse", async (EclipseGameInput input, EclipseDbContext db) =>
+app.MapPost("/eclipse", async (GameInput input, EclipseDbContext db) =>
 {
     var game = new EclipseGame
     {
@@ -68,8 +68,4 @@ app.MapDelete("/eclipse/{id}", async (string id, EclipseDbContext db, HttpContex
 
 app.Run();
 
-public class EclipseGameInput
-{
-    public string? town { get; set; }
-    public string? username { get; set; }
-};
+public record GameInput(string town, string username) { };

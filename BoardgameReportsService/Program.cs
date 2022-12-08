@@ -1,10 +1,4 @@
 
-/*
-Måste kunna skicka förfrågnar till eclispe och monopoly,
-vänta in dessa svaren
-Sammanställa svaren till någon typ av rapport 
-sedan kunna skicka den raporten som en serialiserad svar till en client
-*/
 
 using BoardgameReportsService;
 using BoardgameReportsService.Clients;
@@ -20,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpClient<EclipseClient>(client =>
 {
-    client.BaseAddress = new Uri("http://eclipseservice");
+    client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("EclipseUrl"));
 });
 builder.Services.AddHttpClient<MonopolyClient>(client =>
 {
@@ -72,19 +66,17 @@ app.MapPost("/login", async (LoginCredentials loginCredentials, AuthenticationCl
 app.MapGet("/allGames", async (EclipseClient eclipseClient, MonopolyClient monopolyClient) =>
 {
     var eclipseGames = await eclipseClient.GetEclipseGames();
-    if (eclipseGames == null)
+    //var monopolyGames = await monopolyClient.GetMonopolyGames();
+
+    var allGames = new List<Game>();
+    allGames.AddRange(eclipseGames);
+    //allGames.AddRange(monopolyGames);
+
+    if (allGames == null)
     {
         return Results.NotFound("There are no EclipseGames");
     }
-    var monopolyGames = await monopolyClient.GetMonopolyGames();
-    if (monopolyGames == null)
-    {
-        return Results.NotFound("There are no MonopolyGames");
-    }
-
-    // TODO Slå ihop listorna och returnera denna istället
-
-    return Results.Ok(monopolyGames);
+    return Results.Ok(allGames);
 });
 
 
@@ -95,10 +87,11 @@ app.MapPost("/eclipse/{town}", [Authorize(AuthenticationSchemes = JwtBearerDefau
     var userName = http.User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
     if (userName is null) return Results.BadRequest("Failed to authorize user");
 
-    var input = new EclipseGameInput
+    var input = new GameInput
     {
         UserName = userName,
-        Town = town
+        Town = town,
+
     };
 
     var postSucceeded = await eclipseClient.PostEclipseGame(input);

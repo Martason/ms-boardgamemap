@@ -1,8 +1,8 @@
 namespace BoardgameReportsService.Data
 {
-    public class EclipseGame
+    public class Game
     {
-        public string GameName { get; set; }
+        public string Name { get; set; }
         public DateTime DateOfGame { get; set; }
         public string? Town { get; set; }
         public int? WinningScore { get; set; }
