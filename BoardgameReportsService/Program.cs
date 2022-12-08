@@ -72,19 +72,16 @@ app.MapPost("/login", async (LoginCredentials loginCredentials, AuthenticationCl
 app.MapGet("/allGames", async (EclipseClient eclipseClient, MonopolyClient monopolyClient) =>
 {
     var eclipseGames = await eclipseClient.GetEclipseGames();
-    if (eclipseGames == null)
-    {
-        return Results.NotFound("There are no EclipseGames");
-    }
-    var monopolyGames = await monopolyClient.GetMonopolyGames();
-    if (monopolyGames == null)
-    {
-        return Results.NotFound("There are no MonopolyGames");
-    }
+    //monopolyGames = await monopolyClient.GetMonopolyGames();
 
-    // TODO Slå ihop listorna och returnera denna istället
-
-    return Results.Ok(monopolyGames);
+    var allGames = new List<Game>();
+    allGames.AddRange(eclipseGames);
+    //allGames.AddRange(monopolyGames);
+    if (allGames == null)
+    {
+        return Results.NotFound("There are no games");
+    }
+    return Results.Ok(allGames);
 });
 
 
