@@ -95,7 +95,7 @@ app.MapPost("/eclipse/{town}", [Authorize(AuthenticationSchemes = JwtBearerDefau
     var userName = http.User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
     if (userName is null) return Results.BadRequest("Failed to authorize user");
 
-    var input = new EclipseGameInput
+    var input = new GameInput
     {
         UserName = userName,
         Town = town
@@ -106,7 +106,23 @@ app.MapPost("/eclipse/{town}", [Authorize(AuthenticationSchemes = JwtBearerDefau
     return Results.BadRequest();
 });
 
+app.MapPost("/monopoly/{town}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async (string town, MonopolyClient monopolyClient, HttpContext http) =>
+{
+    if (string.IsNullOrWhiteSpace(town)) return Results.BadRequest();
 
+    var userName = http.User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+    if (userName is null) return Results.BadRequest("Failed to authorize user");
+
+    var input = new GameInput
+    {
+        UserName = userName,
+        Town = town
+    };
+
+    var postSucceeded = await monopolyClient.PostMonopolyGame(input);
+    if (postSucceeded) return Results.Ok(input);
+    return Results.BadRequest();
+});
 
 
 app.Run();
