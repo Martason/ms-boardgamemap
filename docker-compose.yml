@@ -2,29 +2,28 @@ version: "3.9"
 services:  
   boardgamereportsservice:
     build: ./BoardgameReportsService
-    image: piahagman/boardgamereportsservice
+    image: deshie/boardgamereportsservice
     restart: always
     ports:
       - 3004:80
 
   monopolyservice:
     build: ./MonopolyService
-    image: piahagman/monopolyservice
+    image: deshie/monopolyservice
     restart: always
     ports:
       - 3002:80
     
-
   eclipseservice:
     build: ./EclipseService
-    image: piahagman/eclipseservice
+    image: deshie/eclipseservice
     restart: always
     ports:
       - 3001:80
 
   authservice:
     build: ./AuthenticationService
-    image: piahagman/authservice
+    image: deshie/authservice
     restart: always
     ports:
       - 3003:80

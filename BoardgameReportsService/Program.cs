@@ -1,22 +1,16 @@
-/*
-Måste kunna skicka förfrågnar till eclispe och monopoly,
-vänta in dessa svaren
-Sammanställa svaren till någon typ av rapport 
-sedan kunna skicka den raporten som en serialiserad svar till en client
-*/
-
-
-
 
 using BoardgameReportsService;
+using BoardgameReportsService.Clients;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// builder.Services.AddTransient<IReportService, ReportService>();
 
 builder.Services.AddHttpClient<EclipseClient>(client =>
 {
     client.BaseAddress = new Uri("http://eclipseservice");
+});
+builder.Services.AddHttpClient<AuthenticationClient>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("AuthenticationUrl"));
 });
 
 var app = builder.Build();
@@ -33,30 +27,30 @@ app.MapGet("/allGames", async (EclipseClient eclipseClient) =>
     return Results.Ok(eclipseGames);
 });
 
-
 app.MapPost("/eclipse/{town}", async (string town, EclipseClient eclipseClient) =>
 {
     var eclipsegame = await eclipseClient.PostEclipseGame(town);
     return Results.Ok(eclipsegame);
-
 });
 
+app.MapPost("/register", async (RegisterInput userInput, AuthenticationClient authClient) =>
+{
+    var succeed = await authClient.Register(userInput);
+    if (succeed)
+    {
+        return Results.Ok();
+    }
+    return Results.BadRequest();
+});
 
-
-/*
-1. fixa alla endoints här i report service
-    app.MapGet("Login")
-    app.MapGet("Register")
-    app.MapGet("/Monolpoly")
-    app.MapGet("/Eclipse")
-2. få till att kunna hämta data från monopoly och skapa en rapport
-3. client class
-
-*/
-
-
-
+app.MapPost("/login", async (LoginCredentials loginCredentials, AuthenticationClient authClient) =>
+{
+    var tokenstring = await authClient.Login(loginCredentials);
+    if (tokenstring != null) return Results.Ok(tokenstring);
+    return Results.Unauthorized();
+});
 
 app.Run();
 
-
+public record LoginCredentials(string Password, string Email) { };
+public record RegisterInput(string Password, string UserName, string Email) { };
