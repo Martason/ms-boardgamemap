@@ -5,26 +5,101 @@ Sammanställa svaren till någon typ av rapport
 sedan kunna skicka den raporten som en serialiserad svar till en client
 */
 
-using BoardgameReportsService.BusinessLogic;
+using BoardgameReportsService;
+using BoardgameReportsService.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
+using System.Collections.Generic;
+using System.Security.Claims;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+// builder.Services.AddTransient<IReportService, ReportService>();
+builder.Services.AddHttpClient<EclipseClient>(client =>
+{
+    client.BaseAddress = new Uri("http://eclipseservice");
+});
+builder.Services.AddHttpClient<MonopolyClient>(client =>
+{
+    client.BaseAddress = new Uri("http://monopolyservice");
+});
 
-builder.Services.AddHttpClient();
-builder.Services.AddTransient<IReportService, ReportService>();
-builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateActor = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        ClockSkew = TimeSpan.Zero,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+    };
+    options.SaveToken = true;
+});
+builder.Services.AddAuthorization();
 
 
 var app = builder.Build();
+app.UseAuthentication();
+app.UseAuthorization();
 
-app.UseHttpsRedirection();
-
-app.MapGet("/{town}", async (string town, IReportService reportService) =>
+app.MapGet("/allGames", async (EclipseClient eclipseClient, MonopolyClient monopolyClient) =>
 {
-    var report = await reportService.BuildBoardgameReport(town);
-    return Results.Ok(report);
+    var eclipseGames = await eclipseClient.GetEclipseGames();
+    if (eclipseGames == null)
+    {
+        return Results.NotFound("There are no EclipseGames");
+    }
+    var monopolyGames = await monopolyClient.GetMonopolyGames();
+    if (monopolyGames == null)
+    {
+        return Results.NotFound("There are no MonopolyGames");
+    }
+
+    // TODO Slå ihop listorna och returnera denna istället
+
+    return Results.Ok(monopolyGames);
 });
 
 
+app.MapPost("/eclipse/{town}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async (string town, EclipseClient eclipseClient, HttpContext http) =>
+{
+    if (string.IsNullOrWhiteSpace(town)) return Results.BadRequest();
+
+    var userName = http.User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+    if (userName is null) return Results.BadRequest("Failed to authorize user");
+
+    var input = new EclipseGameInput
+    {
+        UserName = userName,
+        Town = town
+    };
+
+    var postSucceeded = await eclipseClient.PostEclipseGame(input);
+    if (postSucceeded) return Results.Ok(input);
+    return Results.BadRequest();
+
+
+});
+
+
+
+/*
+1. fixa alla endoints här i report service
+    app.MapGet("Login")
+    app.MapGet("Register")
+    app.MapGet("/Monolpoly")
+    app.MapGet("/Eclipse")
+2. få till att kunna hämta data från monopoly och skapa en rapport
+3. client class
+
+*/
+
 app.Run();
+
 
 

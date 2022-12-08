@@ -2,30 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Eclipse.Model;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<EclipseDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("EclipseConnection")));
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters()
-    {
-        ValidateActor = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        ClockSkew = TimeSpan.Zero,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-    };
-    options.SaveToken = true;
-});
-builder.Services.AddAuthorization();
+builder.Services.AddDbContext<EclipseDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTION")));
 
 var app = builder.Build();
 
@@ -35,40 +17,40 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<EclipseDbContext>();
     db.Database.Migrate();
 }
-app.UseAuthentication();
-app.UseAuthorization();
 
-app.MapGet("/", (EclipseDbContext db) =>
+app.MapGet("/eclipse", (EclipseDbContext db) =>
 {
     var allEclipseGames = db.EclipseGames;
     return (allEclipseGames is null) ? Results.NoContent() : Results.Ok(allEclipseGames);
 });
 
-
-app.MapPost("/{town}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async (string town, EclipseDbContext db, HttpContext http) =>
+app.MapGet("/eclipse/{id}", async (string id, EclipseDbContext db) =>
 {
-    if (string.IsNullOrWhiteSpace(town)) return Results.BadRequest();
+    var gameGuid = new Guid(id);
+    var game = await db.EclipseGames.FirstOrDefaultAsync(g => g.Id == gameGuid);
 
-    var _userId = http.User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
-    if (_userId is null) return Results.BadRequest("Failed to authorize user");
+    return game;
+});
 
+app.MapPost("/eclipse", async (EclipseGameInput input, EclipseDbContext db) =>
+{
     var game = new EclipseGame
     {
         GameName = "Eclipse",
         DateOfGame = DateTime.Now,
-        Town = town,
+        Town = input.town,
         WinningScore = 10,
-        UserName = _userId
+        UserName = input.username
     };
 
     db.EclipseGames.Add(game);
     await db.SaveChangesAsync();
-    return Results.Created($"game/{town}", game);
+    return Results.Ok(game);
 
 });
 
 
-app.MapDelete("/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async (string id, EclipseDbContext db, HttpContext http) =>
+app.MapDelete("/eclipse/{id}", async (string id, EclipseDbContext db, HttpContext http) =>
 {
     var UserName = http.User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
     if (UserName is null) return Results.BadRequest("Failed to authorize user");
@@ -86,3 +68,8 @@ app.MapDelete("/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.Auth
 
 app.Run();
 
+public class EclipseGameInput
+{
+    public string? town { get; set; }
+    public string? username { get; set; }
+};
