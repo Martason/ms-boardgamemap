@@ -26,7 +26,10 @@ builder.Services.AddHttpClient<MonopolyClient>(client =>
 {
     client.BaseAddress = new Uri("http://monopolyservice");
 });
-
+builder.Services.AddHttpClient<AuthenticationClient>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("AuthenticationUrl"));
+});
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters()
@@ -44,14 +47,27 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 });
 builder.Services.AddAuthorization();
 
-builder.Services.AddHttpClient<AuthenticationClient>(client =>
-{
-    client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("AuthenticationUrl"));
-});
-
 var app = builder.Build();
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapPost("/register", async (RegisterInput userInput, AuthenticationClient authClient) =>
+{
+    var succeed = await authClient.Register(userInput);
+    if (succeed)
+    {
+        return Results.Ok();
+    }
+    return Results.BadRequest();
+});
+
+app.MapPost("/login", async (LoginCredentials loginCredentials, AuthenticationClient authClient) =>
+{
+    var tokenstring = await authClient.Login(loginCredentials);
+    if (tokenstring != null) return Results.Ok(tokenstring);
+    return Results.Unauthorized();
+});
+
 
 app.MapGet("/allGames", async (EclipseClient eclipseClient, MonopolyClient monopolyClient) =>
 {
@@ -88,25 +104,10 @@ app.MapPost("/eclipse/{town}", [Authorize(AuthenticationSchemes = JwtBearerDefau
     var postSucceeded = await eclipseClient.PostEclipseGame(input);
     if (postSucceeded) return Results.Ok(input);
     return Results.BadRequest();
-
-
 });
 
-app.MapPost("/login", async (LoginCredentials loginCredentials, AuthenticationClient authClient) =>
-{
-    var tokenstring = await authClient.Login(loginCredentials);
-    if (tokenstring != null) return Results.Ok(tokenstring);
-    return Results.Unauthorized();
-});
-app.MapPost("/register", async (RegisterInput userInput, AuthenticationClient authClient) =>
-{
-    var succeed = await authClient.Register(userInput);
-    if (succeed)
-    {
-        return Results.Ok();
-    }
-    return Results.BadRequest();
-});
+
+
 
 app.Run();
 
