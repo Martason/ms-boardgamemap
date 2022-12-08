@@ -17,6 +17,11 @@ namespace BoardgameReportsService
             return monopolyGames;
         }
 
+        public async Task<bool> PostMonopolyGame(GameInput input)
+        {
+            var monopolyGame = await _httpClient.PostAsJsonAsync<GameInput>($"/monopoly", input);
+            return monopolyGame.IsSuccessStatusCode;
+        }
 
     }
 }

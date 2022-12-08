@@ -17,9 +17,9 @@ namespace BoardgameReportsService
             return eclipseGames;
         }
 
-        public async Task<bool> PostEclipseGame(EclipseGameInput input)
+        public async Task<bool> PostEclipseGame(GameInput input)
         {
-            var eclipseGame = await _httpClient.PostAsJsonAsync<EclipseGameInput>($"/eclipse", input);
+            var eclipseGame = await _httpClient.PostAsJsonAsync<GameInput>($"/eclipse", input);
             return eclipseGame.IsSuccessStatusCode;
         }
 
