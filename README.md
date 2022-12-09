@@ -16,11 +16,11 @@ POST /monopoly/{town} => möjlighet att posta brädspelspartier i en stad
   
 ## MonopolyService   
 GET /monopoly => hämtar alla spelade Monopolpartier.  
-POST /monopoly/ {stad}  [Authorize] 
+POST /monopoly/ {stad}  [Authorize]   
 DELETE /monopoly/{id} => baserat på Boardgame-id [Authorize]  
 
 ## EclipseService   
 GET /eclipse  => hämtar alla spelade Eclipsespartier.   
 GET /eclipse/{id} => hämtar specifikt brädspesparti  
-POST /eclipse/{stad} [Authorize]   
+POST /eclipse/{stad} [Authorize]     
 DELETE /eclipse/{id} 	=> baserat på Boardgame-id  [Authorize]     
