@@ -1,4 +1,4 @@
-### Plan projekt 
+### Available Endpoints 
 # BoardgameMap
 
 ## AuthService  
@@ -7,17 +7,20 @@ POST /register
 POST /login 
   
 ## BoardgameReportsService  
-*Roll: Att sammanställa data (bland annat till frontend och emailservice) genom att kommunicera med olika Boardgame-Api:er, exempelvis SettlersService.*  
-GET / {stad} - hämtar alla boardgames som har spelats i den staden.   
-GET / {boardgame} - hämtar var i Sverige som man har spelat det brädspelet.   
-GET / {user} - hämtar vilka boardgames denna user spelat och var i Sverige  
+*Roll: Att fungera som en gateway och skicka vidare http-requests från klienten till övriga mikrotjänster. Sammanställa data och validera token.*  
+POST /register
+POST /login
+GET /allGames => hämtar alla boardgames.   
+POST /eclipse/{town} => möjlighet att posta brädspelspartier i en stad  
+POST /monopoly/{town} => möjlighet att posta brädspelspartier i en stad   
   
 ## MonopolyService   
-GET / hämtar alla spelade Monopolpartier.  
-POST  / {user} / {stad}  [Authenticate] 
-DELETE  /{id}	 => baserat på Boardgame-id [Authenticate]  
+GET /monopoly => hämtar alla spelade Monopolpartier.  
+POST /monopoly/ {stad}  [Authorize] 
+DELETE /monopoly/{id} => baserat på Boardgame-id [Authorize]  
 
-## SettlersService   
-GET /  => hämtar alla spelade Settlerspartier.   
-POST /{user} / {stad} [Authenticate]   
-DELETE /{id} 	=> baserat på Boardgame-id  [Authenticate]    
+## EclipseService   
+GET /eclipse  => hämtar alla spelade Eclipsespartier.   
+GET /eclipse/{id} => hämtar specifikt brädspesparti  
+POST /eclipse/{stad} [Authorize]   
+DELETE /eclipse/{id} 	=> baserat på Boardgame-id  [Authorize]     
