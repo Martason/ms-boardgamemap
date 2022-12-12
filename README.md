@@ -1,7 +1,7 @@
 ### Available Endpoints 
 # BoardgameMap
 
-## AuthService  
+## AuthenticationService  
 *Roll: Skapa nya konton och generera token via login. Använder en egen databas*    
 POST /register  
 POST /login 
