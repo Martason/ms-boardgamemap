@@ -14,14 +14,14 @@ GET /allGames => hämtar alla boardgames.
 POST /eclipse/{town} => möjlighet att posta brädspelspartier i en stad. Kräver att man är inloggad  
 POST /monopoly/{town} => möjlighet att posta brädspelspartier i en stad. Kräver att man är inloggad 
 
+## MonopolyService
 *Roll: Ansvarar för post- och getanrop för spelade partier av brädspelet Monopol. Använder en egen databas* 
-## MonopolyService   
 GET /monopoly => hämtar alla spelade Monopolpartier.  
 POST /monopoly/ {stad}  [Authorize]   
 DELETE /monopoly/{id} => baserat på Boardgame-id [Authorize]  
 
+## EclipseService
 *Roll: Ansvarar för post- och getanrop för spelade partier av brädspelet Eclipse. Använder en egen databas*
-## EclipseService   
 GET /eclipse  => hämtar alla spelade Eclipsespartier.   
 GET /eclipse/{id} => hämtar specifikt brädspesparti  
 POST /eclipse/{stad} [Authorize]     
